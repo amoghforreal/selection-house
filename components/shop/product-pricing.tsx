@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Minus, Plus, Lock, ShieldCheck } from 'lucide-react'
+import { SaveForReorderButton } from '@/components/shop/save-for-reorder-button'
 
 type PricingTier = { id: string; min_quantity: number; discount_percent: number }
 type Variant = { id: string; variant_name: string; stock_quantity: number }
@@ -177,9 +178,12 @@ export function ProductPricing({
       </div>
 
       {isLoggedIn ? (
-        <Button className="w-full" size="lg" onClick={handleAddToCart} disabled={adding}>
-          {adding ? 'Adding...' : added ? 'Added to Cart' : 'Add to Cart'}
-        </Button>
+        <div className="flex gap-2">
+          <Button className="flex-1" size="lg" onClick={handleAddToCart} disabled={adding}>
+            {adding ? 'Adding...' : added ? 'Added to Cart' : 'Add to Cart'}
+          </Button>
+          <SaveForReorderButton productId={productId} isLoggedIn={isLoggedIn} variant="icon" />
+        </div>
       ) : (
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-3">

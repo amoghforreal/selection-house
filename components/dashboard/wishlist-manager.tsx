@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
-import { Heart, Trash2 } from 'lucide-react'
+import { Repeat, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { placeholderImage } from '@/lib/placeholder-image'
 
@@ -61,12 +61,15 @@ export function WishlistManager() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Your Wishlist</h1>
+      <h1 className="text-2xl font-bold mb-1">Saved for Reorder</h1>
+      <p className="text-muted-foreground text-sm mb-6">
+        Products you order often, one tap away from reordering.
+      </p>
 
       {items.length === 0 ? (
         <div className="border rounded-xl p-12 text-center">
-          <Heart className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground mb-4">Your wishlist is empty.</p>
+          <Repeat className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
+          <p className="text-muted-foreground mb-4">Nothing saved for reorder yet.</p>
           <Button render={<Link href="/dashboard/catalogue" />}>Browse Catalogue</Button>
         </div>
       ) : (
