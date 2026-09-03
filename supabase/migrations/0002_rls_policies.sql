@@ -7,22 +7,22 @@
 -- HELPER FUNCTION: check if current user is admin/staff/super_admin
 -- ==========================================
 create or replace function is_staff_or_admin()
-returns boolean as \$\$
+returns boolean as $$
   select exists (
     select 1 from profiles
     where id = auth.uid()
     and role in ('staff', 'admin', 'super_admin')
   );
-\$\$ language sql security definer stable;
+$$ language sql security definer stable;
 
 create or replace function is_super_admin()
-returns boolean as \$\$
+returns boolean as $$
   select exists (
     select 1 from profiles
     where id = auth.uid()
     and role = 'super_admin'
   );
-\$\$ language sql security definer stable;
+$$ language sql security definer stable;
 
 -- ==========================================
 -- PROFILES
