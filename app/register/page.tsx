@@ -94,10 +94,18 @@ export default function RegisterPage() {
 
     const supabase = createClient()
 
-    // Step 1: create the auth user
+    // Step 1: create the auth user. full_name/phone are passed as metadata,
+    // a database trigger uses them to auto-create the profile row server-side,
+    // so this works correctly regardless of email confirmation timing.
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
+      options: {
+        data: {
+          full_name: values.fullName,
+          phone: values.phone,
+        },
+      },
     })
 
     if (authError || !authData.user) {
@@ -108,21 +116,7 @@ export default function RegisterPage() {
 
     const userId = authData.user.id
 
-    // Step 2: create the profile
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: userId,
-      full_name: values.fullName,
-      phone: values.phone,
-      role: 'buyer',
-    })
-
-    if (profileError) {
-      setLoading(false)
-      setServerError(profileError.message)
-      return
-    }
-
-    // Step 3: create the business (status defaults to 'pending' for admin approval)
+    // Step 2: create the business (status defaults to 'pending' for admin approval)
     const { error: businessError } = await supabase.from('businesses').insert({
       profile_id: userId,
       shop_name: values.shopName,
