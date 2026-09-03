@@ -129,3 +129,203 @@ create table pricing_tiers (
 );
 
 create index idx_pricing_tiers_product on pricing_tiers(product_id);
+
+-- ==========================================
+-- ADDRESSES (buyer can have multiple shop/branch addresses)
+-- ==========================================
+create table addresses (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references businesses(id) on delete cascade,
+  label text not null default 'Main Branch',
+  recipient_name text not null,
+  phone text not null,
+  address_line text not null,
+  city text not null,
+  state text not null,
+  pincode text not null,
+  is_default boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index idx_addresses_business on addresses(business_id);
+
+-- ==========================================
+-- CART ITEMS
+-- ==========================================
+create table cart_items (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references profiles(id) on delete cascade,
+  product_id uuid not null references products(id) on delete cascade,
+  variant_id uuid references product_variants(id) on delete cascade,
+  quantity int not null default 1,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (profile_id, product_id, variant_id)
+);
+
+create index idx_cart_items_profile on cart_items(profile_id);
+
+-- ==========================================
+-- ORDERS
+-- ==========================================
+create type order_status as enum (
+  'pending', 'confirmed', 'packed', 'shipped', 'delivered', 'cancelled'
+);
+create type payment_status as enum ('pending', 'paid', 'failed', 'refunded');
+
+create table orders (
+  id uuid primary key default gen_random_uuid(),
+  order_number text not null unique,
+  business_id uuid not null references businesses(id) on delete restrict,
+  address_id uuid not null references addresses(id) on delete restrict,
+  status order_status not null default 'pending',
+  payment_status payment_status not null default 'pending',
+  subtotal numeric(10,2) not null,
+  discount_amount numeric(10,2) not null default 0,
+  shipping_amount numeric(10,2) not null default 0,
+  tax_amount numeric(10,2) not null default 0,
+  total_amount numeric(10,2) not null,
+  notes text,
+  razorpay_order_id text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index idx_orders_business on orders(business_id);
+create index idx_orders_status on orders(status);
+create index idx_orders_number on orders(order_number);
+
+-- ==========================================
+-- ORDER ITEMS
+-- ==========================================
+create table order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references orders(id) on delete cascade,
+  product_id uuid not null references products(id) on delete restrict,
+  variant_id uuid references product_variants(id) on delete restrict,
+  product_name text not null,
+  variant_name text,
+  unit_price numeric(10,2) not null,
+  quantity int not null,
+  line_total numeric(10,2) not null,
+  created_at timestamptz not null default now()
+);
+
+create index idx_order_items_order on order_items(order_id);
+
+-- ==========================================
+-- PAYMENTS (transaction log, separate from orders for refund/retry history)
+-- ==========================================
+create table payments (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references orders(id) on delete cascade,
+  razorpay_payment_id text,
+  razorpay_signature text,
+  amount numeric(10,2) not null,
+  status payment_status not null default 'pending',
+  method text,
+  raw_response jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index idx_payments_order on payments(order_id);
+
+-- ==========================================
+-- COUPONS
+-- ==========================================
+create table coupons (
+  id uuid primary key default gen_random_uuid(),
+  code text not null unique,
+  description text,
+  discount_percent numeric(5,2),
+  discount_flat numeric(10,2),
+  min_order_amount numeric(10,2) default 0,
+  max_uses int,
+  used_count int not null default 0,
+  valid_from timestamptz not null default now(),
+  valid_until timestamptz,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+-- ==========================================
+-- BANNERS (homepage/category CMS, editable without touching code)
+-- ==========================================
+create table banners (
+  id uuid primary key default gen_random_uuid(),
+  title text,
+  image_url text not null,
+  link_url text,
+  placement text not null default 'homepage_hero',
+  display_order int not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+-- ==========================================
+-- REVIEWS
+-- ==========================================
+create table reviews (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references products(id) on delete cascade,
+  profile_id uuid not null references profiles(id) on delete cascade,
+  rating int not null check (rating between 1 and 5),
+  comment text,
+  is_approved boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index idx_reviews_product on reviews(product_id);
+
+-- ==========================================
+-- NOTIFICATIONS (in-app + log for email/SMS/WhatsApp triggers)
+-- ==========================================
+create type notification_channel as enum ('in_app', 'email', 'sms', 'whatsapp');
+
+create table notifications (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references profiles(id) on delete cascade,
+  channel notification_channel not null default 'in_app',
+  title text not null,
+  message text not null,
+  is_read boolean not null default false,
+  related_order_id uuid references orders(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+create index idx_notifications_profile on notifications(profile_id);
+
+-- ==========================================
+-- SUPPORT TICKETS
+-- ==========================================
+create type ticket_status as enum ('open', 'in_progress', 'resolved', 'closed');
+
+create table support_tickets (
+  id uuid primary key default gen_random_uuid(),
+  business_id uuid not null references businesses(id) on delete cascade,
+  subject text not null,
+  message text not null,
+  status ticket_status not null default 'open',
+  related_order_id uuid references orders(id) on delete set null,
+  assigned_to uuid references profiles(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index idx_support_tickets_business on support_tickets(business_id);
+
+-- ==========================================
+-- AUDIT LOGS (tracks admin/staff actions)
+-- ==========================================
+create table audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  actor_id uuid references profiles(id) on delete set null,
+  action text not null,
+  table_name text,
+  record_id uuid,
+  old_data jsonb,
+  new_data jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index idx_audit_logs_actor on audit_logs(actor_id);
