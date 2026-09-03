@@ -40,7 +40,7 @@ export function FeaturedCategories() {
         {FEATURED_CATEGORIES.map(({ name, slug, icon: Icon }) => (
           <Link
             key={slug}
-            href={\/shop/\\}
+            href={`/shop/${slug}`}
             className="group flex flex-col items-center gap-3 p-5 rounded-xl border bg-card hover:border-primary hover:shadow-md transition-all"
           >
             <div className="h-14 w-14 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary transition-colors">
