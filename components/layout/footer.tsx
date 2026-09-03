@@ -18,7 +18,7 @@ function slugify(name: string) {
     .toLowerCase()
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-\$)/g, '')
+    .replace(/(^-|-$)/g, '')
 }
 
 export function Footer() {
@@ -61,7 +61,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm">
             {CATEGORIES.map((cat) => (
               <li key={cat}>
-                <Link href={\/shop/\\} className="hover:text-primary transition-colors">
+                <Link href={`/shop/${slugify(cat)}`} className="hover:text-primary transition-colors">
                   {cat}
                 </Link>
               </li>

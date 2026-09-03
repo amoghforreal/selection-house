@@ -52,7 +52,7 @@ function slugify(name: string) {
     .toLowerCase()
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-\$)/g, '')
+    .replace(/(^-|-$)/g, '')
 }
 
 // Cart count is a placeholder until cart state is wired to Supabase.
@@ -163,7 +163,7 @@ export function Navbar() {
                     {CATEGORIES.map((cat) => (
                       <Link
                         key={cat}
-                        href={\/shop/\\}
+                        href={`/shop/${slugify(cat)}`}
                         onClick={() => setMobileOpen(false)}
                         className="py-2 text-sm hover:text-primary transition-colors"
                       >
@@ -186,7 +186,7 @@ export function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="max-h-96 overflow-y-auto">
               {CATEGORIES.map((cat) => (
-                <DropdownMenuItem key={cat} render={<Link href={\/shop/\\} />}>
+                <DropdownMenuItem key={cat} render={<Link href={`/shop/${slugify(cat)}`} />}>
                   {cat}
                 </DropdownMenuItem>
               ))}
