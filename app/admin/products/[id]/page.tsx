@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/card'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { Trash2, Plus } from 'lucide-react'
+import { ProductPhotoUpload } from '@/components/admin/product-photo-upload'
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -44,6 +45,8 @@ export default function EditProductPage({ params }: PageProps) {
     isFeatured: false,
     isActive: true,
   })
+  const [slug, setSlug] = useState('')
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null)
 
   const [variants, setVariants] = useState<Variant[]>([])
   const [newVariantName, setNewVariantName] = useState('')
@@ -73,6 +76,8 @@ export default function EditProductPage({ params }: PageProps) {
         isFeatured: product.is_featured,
         isActive: product.is_active,
       })
+      setSlug(product.slug)
+      setCoverImageUrl(product.cover_image_url)
     }
 
     const { data: variantRows } = await supabase
@@ -180,6 +185,20 @@ export default function EditProductPage({ params }: PageProps) {
           Delete Product
         </Button>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Product Photo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductPhotoUpload
+            productId={id}
+            productSlug={slug}
+            currentImageUrl={coverImageUrl}
+            onUploaded={setCoverImageUrl}
+          />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
