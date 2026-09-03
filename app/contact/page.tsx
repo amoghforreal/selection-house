@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { getSiteSettings } from '@/lib/site-settings'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -19,7 +20,17 @@ export const metadata: Metadata = {
     'Get in touch with Selection House for wholesale sports goods inquiries. Visit us in Pilibhit, call, or message us on WhatsApp.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings()
+
+  const phone = settings?.business_phone || '+91 63986 58181'
+  const whatsapp = settings?.business_whatsapp || '916398658181'
+  const address =
+    settings?.business_address ||
+    'Station Road, Pilibhit, Opp. BOB Bank, Pilibhit, Uttar Pradesh'
+  const hours = settings?.business_hours || 'Mon to Sat: 10:00 AM to 8:00 PM'
+  const phoneDigits = phone.replace(/[^0-9+]/g, '')
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
       <div className="text-center mb-12">
@@ -40,9 +51,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <CardTitle className="text-base">Visit Our Store</CardTitle>
-                <CardDescription>
-                  Station Road, Pilibhit, Opp. BOB Bank, Pilibhit, Uttar Pradesh
-                </CardDescription>
+                <CardDescription>{address}</CardDescription>
               </div>
             </CardHeader>
           </Card>
@@ -55,8 +64,8 @@ export default function ContactPage() {
               <div>
                 <CardTitle className="text-base">Call Us</CardTitle>
                 <CardDescription>
-                  <a href="tel:+916398658181" className="hover:text-primary transition-colors">
-                    +91 63986 58181
+                  <a href={`tel:${phoneDigits}`} className="hover:text-primary transition-colors">
+                    {phone}
                   </a>
                 </CardDescription>
               </div>
@@ -72,7 +81,7 @@ export default function ContactPage() {
                 <CardTitle className="text-base">WhatsApp</CardTitle>
                 <CardDescription>
                   <Link
-                    href="https://wa.me/916398658181"
+                    href={`https://wa.me/${whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-primary transition-colors"
@@ -91,7 +100,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <CardTitle className="text-base">Business Hours</CardTitle>
-                <CardDescription>Mon to Sat: 10:00 AM to 8:00 PM</CardDescription>
+                <CardDescription>{hours}</CardDescription>
               </div>
             </CardHeader>
           </Card>

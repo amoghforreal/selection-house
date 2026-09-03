@@ -1,8 +1,12 @@
 import Link from 'next/link'
 import { ArrowRight, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getSiteSettings } from '@/lib/site-settings'
 
-export function CtaBanner() {
+export async function CtaBanner() {
+  const settings = await getSiteSettings()
+  const whatsapp = settings?.business_whatsapp || '916398658181'
+
   return (
     <section className="bg-accent text-accent-foreground">
       <div className="mx-auto max-w-7xl px-4 py-12 md:py-16 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
@@ -29,7 +33,7 @@ export function CtaBanner() {
             size="lg"
             variant="outline"
             className="bg-transparent border-accent-foreground/30 text-accent-foreground hover:bg-accent-foreground/10 text-base"
-            render={<Link href="https://wa.me/916398658181" target="_blank" rel="noopener noreferrer" />}
+            render={<Link href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" />}
           >
             <Phone className="h-4 w-4 mr-2" />
             WhatsApp Us

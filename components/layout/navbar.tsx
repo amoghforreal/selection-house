@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
 import { createClient } from '@/lib/supabase/client'
+import type { SiteSettings } from '@/lib/site-settings'
 
 const CATEGORIES = [
   'Hockey',
@@ -70,6 +71,7 @@ export function Navbar() {
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [auth, setAuth] = useState<AuthState>({ loading: true, isLoggedIn: false, isAdmin: false })
+  const [settings, setSettings] = useState<Pick<SiteSettings, 'business_address'> | null>(null)
 
   const supabase = createClient()
 
@@ -97,6 +99,13 @@ export function Navbar() {
       loadAuth(user?.id ?? null)
     })
 
+    supabase
+      .from('site_settings')
+      .select('business_address')
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => setSettings(data))
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -123,7 +132,7 @@ export function Navbar() {
       <div className="hidden md:block bg-primary text-primary-foreground text-xs">
         <div className="mx-auto max-w-7xl px-4 py-1.5 flex items-center justify-between">
           <span>Wholesale sports goods supplier, serving shop owners since 1989</span>
-          <span>Pilibhit, Uttar Pradesh</span>
+          <span>{settings?.business_address?.split(',').slice(-2).join(',').trim() || 'Pilibhit, Uttar Pradesh'}</span>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { MapPin, Phone, MessageCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import { getSiteSettings } from '@/lib/site-settings'
 
 const CATEGORIES = [
   'Hockey',
@@ -21,7 +22,17 @@ function slugify(name: string) {
     .replace(/(^-|-$)/g, '')
 }
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getSiteSettings()
+
+  const phone = settings?.business_phone || '+91 63986 58181'
+  const whatsapp = settings?.business_whatsapp || '916398658181'
+  const address =
+    settings?.business_address ||
+    'Station Road, Pilibhit, Opp. BOB Bank, Pilibhit, Uttar Pradesh'
+  const hours = settings?.business_hours || 'Mon to Sat: 10:00 AM to 8:00 PM'
+  const phoneDigits = phone.replace(/[^0-9+]/g, '')
+
   return (
     <footer className="bg-secondary text-secondary-foreground border-t mt-auto">
       <div className="mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -33,12 +44,12 @@ export function Footer() {
           </p>
           <div className="flex items-start gap-2 text-sm mb-2">
             <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-accent" />
-            <span>Station Road, Pilibhit, Opp. BOB Bank, Pilibhit, Uttar Pradesh</span>
+            <span>{address}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Phone className="h-4 w-4 shrink-0 text-accent" />
-            <Link href="tel:+916398658181" className="hover:text-primary transition-colors">
-              +91 63986 58181
+            <Link href={`tel:${phoneDigits}`} className="hover:text-primary transition-colors">
+              {phone}
             </Link>
           </div>
         </div>
@@ -73,7 +84,7 @@ export function Footer() {
         <div>
           <h4 className="font-semibold mb-3">Connect With Us</h4>
           <div className="flex flex-col gap-2 text-sm">
-            <Link href="https://wa.me/916398658181" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+            <Link href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
               <MessageCircle className="h-4 w-4 text-accent" />
               WhatsApp Us
             </Link>
@@ -84,7 +95,7 @@ export function Footer() {
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
             <p className="font-medium text-foreground mb-1">Wholesale Support Hours</p>
-            <p>Mon to Sat: 10:00 AM to 8:00 PM</p>
+            <p>{hours}</p>
           </div>
         </div>
       </div>
