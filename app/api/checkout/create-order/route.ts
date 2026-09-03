@@ -92,8 +92,14 @@ export async function POST(request: Request) {
     })
   }
 
-  const shippingAmount = 0 // placeholder, owner configures shipping rules later
-  const taxAmount = 0 // placeholder, owner configures GST calculation later
+  const { data: siteSettings } = await supabase
+    .from('site_settings')
+    .select('default_shipping_rate, default_tax_percent')
+    .limit(1)
+    .maybeSingle()
+
+  const shippingAmount = siteSettings?.default_shipping_rate || 0
+  const taxAmount = subtotal * ((siteSettings?.default_tax_percent || 0) / 100)
   const totalAmount = subtotal + shippingAmount + taxAmount
 
   const orderNumber = `SH-${Date.now()}`

@@ -39,6 +39,8 @@ export function CheckoutFlow() {
   const [addresses, setAddresses] = useState<Address[]>([])
   const [selectedAddressId, setSelectedAddressId] = useState<string>('')
   const [cartItems, setCartItems] = useState<CartRow[]>([])
+  const [shippingRate, setShippingRate] = useState(0)
+  const [taxPercent, setTaxPercent] = useState(0)
   const [loading, setLoading] = useState(true)
   const [placing, setPlacing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -76,6 +78,16 @@ export function CheckoutFlow() {
         .eq('profile_id', user.id)
 
       setCartItems((cartRows as unknown as CartRow[]) || [])
+
+      const { data: siteSettings } = await supabase
+        .from('site_settings')
+        .select('default_shipping_rate, default_tax_percent')
+        .limit(1)
+        .maybeSingle()
+
+      setShippingRate(siteSettings?.default_shipping_rate || 0)
+      setTaxPercent(siteSettings?.default_tax_percent || 0)
+
       setLoading(false)
     }
 
@@ -83,10 +95,13 @@ export function CheckoutFlow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const taxAmount = 0 // recomputed below once subtotal is known
   const subtotal = cartItems.reduce(
     (sum, item) => sum + (item.product?.base_price || 0) * item.quantity,
     0
   )
+  const computedTaxAmount = subtotal * (taxPercent / 100)
+  const total = subtotal + shippingRate + computedTaxAmount
 
   async function handlePayNow() {
     setError(null)
@@ -235,12 +250,18 @@ export function CheckoutFlow() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Shipping</span>
-              <span>Calculated by seller</span>
+              <span>{shippingRate > 0 ? `₹${shippingRate.toFixed(2)}` : 'Free'}</span>
             </div>
+            {taxPercent > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Tax ({taxPercent}%)</span>
+                <span>₹{computedTaxAmount.toFixed(2)}</span>
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between font-bold text-lg border-t pt-3 mb-5">
             <span>Total</span>
-            <span>₹{subtotal.toFixed(2)}</span>
+            <span>₹{total.toFixed(2)}</span>
           </div>
 
           {error && <p className="text-sm text-destructive mb-3">{error}</p>}
