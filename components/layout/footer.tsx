@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Phone, Instagram, MessageCircle } from 'lucide-react'
+import { MapPin, Phone, MessageCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 const CATEGORIES = [
@@ -37,9 +37,9 @@ export function Footer() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Phone className="h-4 w-4 shrink-0 text-accent" />
-            <a href="tel:+916398658181" className="hover:text-primary transition-colors">
+            <Link href="tel:+916398658181" className="hover:text-primary transition-colors">
               +91 63986 58181
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -73,24 +73,14 @@ export function Footer() {
         <div>
           <h4 className="font-semibold mb-3">Connect With Us</h4>
           <div className="flex flex-col gap-2 text-sm">
-            
-              href="https://wa.me/916398658181"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-primary transition-colors"
-            >
+            <Link href="https://wa.me/916398658181" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
               <MessageCircle className="h-4 w-4 text-accent" />
               WhatsApp Us
-            </a>
-            
-              href="https://instagram.com/selectionhouse.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-primary transition-colors"
-            >
-              <Instagram className="h-4 w-4 text-accent" />
+            </Link>
+            <Link href="https://instagram.com/selectionhouse.in" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <svg className="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
               @selectionhouse.in
-            </a>
+            </Link>
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
             <p className="font-medium text-foreground mb-1">Wholesale Support Hours</p>
