@@ -70,6 +70,7 @@ type AuthState = {
 export function Navbar() {
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [auth, setAuth] = useState<AuthState>({ loading: true, isLoggedIn: false, isAdmin: false })
   const [settings, setSettings] = useState<Pick<SiteSettings, 'business_address'> | null>(null)
 
@@ -116,6 +117,13 @@ export function Navbar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault()
+    if (!searchQuery.trim()) return
+    setMobileOpen(false)
+    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut()
     setMobileOpen(false)
@@ -144,14 +152,18 @@ export function Navbar() {
           </Link>
 
           {/* Desktop search bar */}
-          <div className="hidden md:flex flex-1 max-w-xl relative">
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative">
             <Input
               type="search"
               placeholder="Search for products..."
               className="pr-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
+            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Search">
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </form>
 
           {/* Desktop right actions */}
           <div className="hidden md:flex items-center gap-2 shrink-0">
@@ -230,10 +242,18 @@ export function Navbar() {
                   <SheetTitle className="text-primary">Selection House</SheetTitle>
                 </SheetHeader>
                 <div className="px-4 pb-6 flex flex-col gap-4">
-                  <div className="relative">
-                    <Input type="search" placeholder="Search for products..." className="pr-10" />
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  </div>
+                  <form onSubmit={handleSearch} className="relative">
+                    <Input
+                      type="search"
+                      placeholder="Search for products..."
+                      className="pr-10"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Search">
+                      <Search className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </form>
 
                   {auth.loading ? (
                     <div className="h-9 w-full rounded-md bg-secondary animate-pulse" />
