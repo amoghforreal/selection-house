@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ChevronRight, Lock, Package, ShieldCheck } from 'lucide-react'
+import Image from 'next/image'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 export const dynamic = 'force-dynamic'
 
@@ -129,9 +131,16 @@ export default async function ProductPage({ params }: PageProps) {
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Image placeholder */}
-        <div className="aspect-square rounded-xl bg-secondary flex items-center justify-center">
-          <span className="text-muted-foreground text-sm">Product photo placeholder</span>
+        {/* Placeholder photo, swap for real product photography via product_images table */}
+        <div className="relative aspect-square rounded-xl overflow-hidden bg-secondary">
+          <Image
+            src={placeholderImage(product.slug, 800, 800)}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority
+          />
         </div>
 
         {/* Details */}

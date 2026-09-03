@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { Heart, Trash2 } from 'lucide-react'
+import Image from 'next/image'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 type WishlistRow = {
   id: string
@@ -71,7 +73,17 @@ export function WishlistManager() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((item) => (
             <div key={item.id} className="border rounded-xl overflow-hidden">
-              <div className="aspect-video bg-secondary" />
+              <div className="relative aspect-video bg-secondary">
+                {item.product && (
+                  <Image
+                    src={placeholderImage(item.product.slug, 500, 300)}
+                    alt={item.product.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                )}
+              </div>
               <div className="p-4">
                 <h3 className="font-medium text-sm mb-1 line-clamp-2">
                   {item.product?.name || 'Product unavailable'}

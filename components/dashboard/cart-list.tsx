@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { Minus, Plus, Trash2, ShoppingCart } from 'lucide-react'
+import Image from 'next/image'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 type CartRow = {
   id: string
@@ -101,7 +103,17 @@ export function CartList() {
             key={item.id}
             className="border rounded-xl p-4 flex items-center gap-4"
           >
-            <div className="h-16 w-16 rounded-lg bg-secondary shrink-0" />
+            <div className="relative h-16 w-16 rounded-lg bg-secondary shrink-0 overflow-hidden">
+              {item.product && (
+                <Image
+                  src={placeholderImage(item.product.slug, 200, 200)}
+                  alt={item.product.name}
+                  fill
+                  className="object-cover"
+                  sizes="64px"
+                />
+              )}
+            </div>
 
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm truncate">

@@ -1,6 +1,8 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Lock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 type Product = {
   id: string
@@ -26,13 +28,19 @@ export function ProductCard({
       href={`/shop/${categorySlug}/${product.slug}`}
       className="group flex flex-col rounded-xl border bg-card overflow-hidden hover:border-primary hover:shadow-md transition-all"
     >
-      <div className="aspect-square bg-secondary flex items-center justify-center relative">
+      <div className="relative aspect-square bg-secondary">
+        <Image
+          src={placeholderImage(product.slug, 500, 500)}
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 50vw, 25vw"
+        />
         {product.is_featured && (
           <Badge className="absolute top-2 left-2 bg-accent text-accent-foreground">
             Featured
           </Badge>
         )}
-        <span className="text-muted-foreground text-xs">Product photo placeholder</span>
       </div>
 
       <div className="p-4 flex flex-col gap-1">

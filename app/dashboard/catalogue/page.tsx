@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { ShoppingBag, Lock } from 'lucide-react'
+import Image from 'next/image'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 export const dynamic = 'force-dynamic'
 
@@ -51,8 +53,14 @@ export default async function DashboardCataloguePage() {
               key={product.id}
               className="border rounded-xl overflow-hidden hover:border-primary hover:shadow-md transition-all"
             >
-              <div className="aspect-video bg-secondary flex items-center justify-center">
-                <span className="text-muted-foreground text-xs">Product photo placeholder</span>
+              <div className="relative aspect-video bg-secondary">
+                <Image
+                  src={placeholderImage(product.slug, 500, 300)}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
               </div>
               <div className="p-4">
                 {product.categories && (
