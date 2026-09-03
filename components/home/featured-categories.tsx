@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Dumbbell,
   ShoppingBag,
@@ -10,6 +11,7 @@ import {
   Shirt,
   Backpack,
 } from 'lucide-react'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 const FEATURED_CATEGORIES = [
   { name: 'Cricket Items', slug: 'cricket-items', icon: Trophy },
@@ -41,12 +43,22 @@ export function FeaturedCategories() {
           <Link
             key={slug}
             href={`/shop/${slug}`}
-            className="group flex flex-col items-center gap-3 p-5 rounded-xl border bg-card hover:border-primary hover:shadow-md transition-all"
+            className="group relative flex flex-col items-center gap-2 rounded-xl border bg-card overflow-hidden hover:border-primary hover:shadow-md transition-all"
           >
-            <div className="h-14 w-14 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary transition-colors">
-              <Icon className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors" />
+            <div className="relative w-full aspect-square">
+              <Image
+                src={placeholderImage(slug, 300, 300)}
+                alt={name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 33vw, 16vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="absolute top-2 left-2 h-8 w-8 rounded-full bg-primary/90 flex items-center justify-center">
+                <Icon className="h-4 w-4 text-primary-foreground" />
+              </div>
             </div>
-            <span className="text-xs sm:text-sm font-medium text-center leading-tight">
+            <span className="text-xs sm:text-sm font-medium text-center leading-tight px-2 pb-3">
               {name}
             </span>
           </Link>

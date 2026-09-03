@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { placeholderImage } from '@/lib/placeholder-image'
 import { ArrowRight, ShieldCheck, Truck, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -60,12 +62,16 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Visual placeholder, real product/store photos go here later */}
+        {/* Placeholder photo, swap for real store/product photography once available */}
         <div className="hidden md:flex items-center justify-center">
-          <div className="w-full aspect-square max-w-md rounded-2xl bg-primary-foreground/10 border border-primary-foreground/20 flex items-center justify-center">
-            <span className="text-primary-foreground/50 text-sm">
-              Store / product photo placeholder
-            </span>
+          <div className="relative w-full aspect-square max-w-md rounded-2xl overflow-hidden border border-primary-foreground/20">
+            <Image
+              src={placeholderImage('selection-house-store-hero', 700, 700)}
+              alt="Selection House wholesale sports goods"
+              fill
+              className="object-cover"
+              priority
+            />
           </div>
         </div>
       </div>

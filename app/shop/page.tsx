@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import {
   Dumbbell,
@@ -18,6 +19,7 @@ import {
   CircleDot,
   Volleyball,
 } from 'lucide-react'
+import { placeholderImage } from '@/lib/placeholder-image'
 
 export const metadata: Metadata = {
   title: 'Shop All Categories',
@@ -66,12 +68,24 @@ export default function ShopPage() {
           <Link
             key={slug}
             href={`/shop/${slug}`}
-            className="group flex flex-col items-center gap-3 p-6 rounded-xl border bg-card hover:border-primary hover:shadow-md transition-all"
+            className="group relative flex flex-col items-center gap-2 rounded-xl border bg-card overflow-hidden hover:border-primary hover:shadow-md transition-all"
           >
-            <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary transition-colors">
-              <Icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
+            <div className="relative w-full aspect-square">
+              <Image
+                src={placeholderImage(slug, 300, 300)}
+                alt={name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 33vw, 20vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="absolute top-2 left-2 h-9 w-9 rounded-full bg-primary/90 flex items-center justify-center">
+                <Icon className="h-4.5 w-4.5 text-primary-foreground" />
+              </div>
             </div>
-            <span className="text-sm font-medium text-center leading-tight">{name}</span>
+            <span className="text-sm font-medium text-center leading-tight px-2 pb-3">
+              {name}
+            </span>
           </Link>
         ))}
       </div>
