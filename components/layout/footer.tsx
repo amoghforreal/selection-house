@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { MapPin, Phone, MessageCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
@@ -27,7 +28,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand */}
         <div>
-          <h3 className="text-lg font-bold text-primary mb-2">Selection House</h3>
+          <Image
+            src="/brand/logo-sports-readymade-transparent.png"
+            alt="Selection House"
+            width={160}
+            height={45}
+            className="h-10 w-auto object-contain mb-3"
+          />
           <p className="text-sm text-muted-foreground mb-4">
             Trusted wholesale sports goods supplier for shop owners, serving since 1989.
           </p>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, Search, ShoppingCart, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -75,7 +76,14 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl font-bold text-primary">Selection House</span>
+            <Image
+              src="/brand/logo-sports-readymade-transparent.png"
+              alt="Selection House"
+              width={160}
+              height={45}
+              className="h-10 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop search bar */}
