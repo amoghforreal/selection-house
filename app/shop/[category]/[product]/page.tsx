@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { ChevronRight, Lock, Package, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { placeholderImage } from '@/lib/placeholder-image'
+import { ProductPricing } from '@/components/shop/product-pricing'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +44,7 @@ export default async function ProductPage({ params }: PageProps) {
     base_price: number
     moq: number
     sku: string | null
+    cover_image_url: string | null
   }
   type PricingTier = { id: string; min_quantity: number; discount_percent: number }
   type Variant = { id: string; variant_name: string; stock_quantity: number }
@@ -63,7 +65,7 @@ export default async function ProductPage({ params }: PageProps) {
 
     const { data: productRow } = await supabase
       .from('products')
-      .select('id, name, slug, description, brand, base_price, moq, sku')
+      .select('id, name, slug, description, brand, base_price, moq, sku, cover_image_url')
       .eq('slug', productSlug)
       .eq('is_active', true)
       .maybeSingle()
@@ -134,7 +136,7 @@ export default async function ProductPage({ params }: PageProps) {
         {/* Placeholder photo, swap for real product photography via product_images table */}
         <div className="relative aspect-square rounded-xl overflow-hidden bg-secondary">
           <Image
-            src={placeholderImage(product.slug, 800, 800)}
+            src={product.cover_image_url || placeholderImage(product.slug, 800, 800)}
             alt={product.name}
             fill
             className="object-cover"
@@ -167,65 +169,14 @@ export default async function ProductPage({ params }: PageProps) {
             <span className="text-sm">Minimum Order Quantity: {product.moq} units</span>
           </div>
 
-          {isLoggedIn ? (
-            <div className="border rounded-xl p-5 mb-6">
-              <span className="text-3xl font-bold text-primary">
-                ₹{product.base_price.toFixed(2)}
-              </span>
-              <span className="text-sm text-muted-foreground ml-2">per unit</span>
-
-              {pricingTiers.length > 0 && (
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm font-semibold mb-2">Bulk Pricing</p>
-                  <div className="space-y-1">
-                    {pricingTiers.map((tier) => (
-                      <div
-                        key={tier.id}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="text-muted-foreground">
-                          {tier.min_quantity}+ units
-                        </span>
-                        <Badge variant="secondary">
-                          {tier.discount_percent}% off
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {variants.length > 0 && (
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm font-semibold mb-2">Available Variants</p>
-                  <div className="flex flex-wrap gap-2">
-                    {variants.map((variant) => (
-                      <Badge key={variant.id} variant="outline">
-                        {variant.variant_name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <Button className="w-full mt-5" size="lg">
-                Add to Cart
-              </Button>
-            </div>
-          ) : (
-            <div className="border rounded-xl p-5 mb-6 text-center">
-              <Lock className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground mb-4">
-                Login to view wholesale pricing and place an order
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <Button render={<Link href="/login" />}>Login</Button>
-                <Button variant="outline" render={<Link href="/register" />}>
-                  Register Your Business
-                </Button>
-              </div>
-            </div>
-          )}
+          <ProductPricing
+            productId={product.id}
+            basePrice={product.base_price}
+            moq={product.moq}
+            pricingTiers={pricingTiers}
+            variants={variants}
+            isLoggedIn={isLoggedIn}
+          />
         </div>
       </div>
     </div>
