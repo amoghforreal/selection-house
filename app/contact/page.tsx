@@ -1,10 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MapPin, Phone, Clock, MessageCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
@@ -12,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { ContactForm } from '@/components/shop/contact-form'
 import { getSiteSettings } from '@/lib/site-settings'
 
 export const metadata: Metadata = {
@@ -116,34 +113,7 @@ export default async function ContactPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Your Name</Label>
-                    <Input id="name" name="name" placeholder="Ramesh Kumar" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" name="phone" placeholder="9876543210" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" placeholder="you@yourshop.com" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell us what you're looking for..."
-                    rows={5}
-                  />
-                </div>
-                <Button type="submit" className="w-full sm:w-auto">
-                  Send Message
-                </Button>
-              </form>
+              <ContactForm />
             </CardContent>
           </Card>
         </div>
