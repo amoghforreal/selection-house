@@ -79,7 +79,7 @@ export function WishlistManager() {
               <div className="relative aspect-video bg-secondary">
                 {item.product && (
                   <Image
-                    src={placeholderImage(item.product.slug, 500, 300)}
+                    src={placeholderImage(item.product.name, 500, 300)}
                     alt={item.product.name}
                     fill
                     className="object-cover"

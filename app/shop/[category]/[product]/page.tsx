@@ -137,7 +137,7 @@ export default async function ProductPage({ params }: PageProps) {
         {/* Placeholder photo, swap for real product photography via product_images table */}
         <div className="relative aspect-square rounded-xl overflow-hidden bg-secondary">
           <Image
-            src={product.cover_image_url || placeholderImage(product.slug, 800, 800)}
+            src={product.cover_image_url || placeholderImage(product.name, 800, 800)}
             alt={product.name}
             fill
             className="object-cover"

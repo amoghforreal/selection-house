@@ -66,7 +66,7 @@ export function Hero() {
         <div className="hidden md:flex items-center justify-center">
           <div className="relative w-full aspect-square max-w-md rounded-2xl overflow-hidden border border-primary-foreground/20">
             <Image
-              src={placeholderImage('selection-house-store-hero', 700, 700)}
+              src={placeholderImage('sports store', 700, 700)}
               alt="Selection House wholesale sports goods"
               fill
               className="object-cover"

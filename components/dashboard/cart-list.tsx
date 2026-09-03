@@ -106,7 +106,7 @@ export function CartList() {
             <div className="relative h-16 w-16 rounded-lg bg-secondary shrink-0 overflow-hidden">
               {item.product && (
                 <Image
-                  src={placeholderImage(item.product.slug, 200, 200)}
+                  src={placeholderImage(item.product.name, 200, 200)}
                   alt={item.product.name}
                   fill
                   className="object-cover"

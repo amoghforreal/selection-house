@@ -55,7 +55,7 @@ export default async function DashboardCataloguePage() {
             >
               <div className="relative aspect-video bg-secondary">
                 <Image
-                  src={placeholderImage(product.slug, 500, 300)}
+                  src={placeholderImage(product.name, 500, 300)}
                   alt={product.name}
                   fill
                   className="object-cover"

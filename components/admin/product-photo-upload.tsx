@@ -9,12 +9,12 @@ import { Upload, ImageIcon } from 'lucide-react'
 
 export function ProductPhotoUpload({
   productId,
-  productSlug,
+  productName,
   currentImageUrl,
   onUploaded,
 }: {
   productId: string
-  productSlug: string
+  productName: string
   currentImageUrl: string | null
   onUploaded: (url: string) => void
 }) {
@@ -68,7 +68,7 @@ export function ProductPhotoUpload({
     <div>
       <div className="relative aspect-square w-full max-w-xs rounded-xl overflow-hidden bg-secondary border mb-3">
         <Image
-          src={previewUrl || placeholderImage(productSlug, 500, 500)}
+          src={previewUrl || placeholderImage(productName, 500, 500)}
           alt="Product cover"
           fill
           className="object-cover"

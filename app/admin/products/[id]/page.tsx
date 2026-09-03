@@ -45,7 +45,7 @@ export default function EditProductPage({ params }: PageProps) {
     isFeatured: false,
     isActive: true,
   })
-  const [slug, setSlug] = useState('')
+  const [productName, setProductName] = useState('')
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null)
 
   const [variants, setVariants] = useState<Variant[]>([])
@@ -76,7 +76,7 @@ export default function EditProductPage({ params }: PageProps) {
         isFeatured: product.is_featured,
         isActive: product.is_active,
       })
-      setSlug(product.slug)
+      setProductName(product.name)
       setCoverImageUrl(product.cover_image_url)
     }
 
@@ -193,7 +193,7 @@ export default function EditProductPage({ params }: PageProps) {
         <CardContent>
           <ProductPhotoUpload
             productId={id}
-            productSlug={slug}
+            productName={productName}
             currentImageUrl={coverImageUrl}
             onUploaded={setCoverImageUrl}
           />

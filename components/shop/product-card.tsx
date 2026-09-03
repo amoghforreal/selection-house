@@ -29,7 +29,7 @@ export function ProductCard({
     >
       <div className="relative aspect-square bg-secondary">
         <Image
-          src={product.cover_image_url || placeholderImage(product.slug, 500, 500)}
+          src={product.cover_image_url || placeholderImage(product.name, 500, 500)}
           alt={product.name}
           fill
           className="object-cover"

@@ -72,7 +72,7 @@ export default function ShopPage() {
           >
             <div className="relative w-full aspect-square">
               <Image
-                src={placeholderImage(slug, 300, 300)}
+                src={placeholderImage(name, 300, 300)}
                 alt={name}
                 fill
                 className="object-cover"
