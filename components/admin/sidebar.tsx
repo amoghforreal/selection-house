@@ -14,7 +14,7 @@ import {
   Settings,
 } from 'lucide-react'
 
-const NAV_ITEMS = [
+export const ADMIN_NAV_ITEMS = [
   { name: 'Overview', href: '/admin', icon: LayoutDashboard },
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Categories', href: '/admin/categories', icon: FolderTree },
@@ -32,7 +32,7 @@ const NAV_ITEMS = [
 export function AdminSidebar() {
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map(({ name, href, icon: Icon }) => (
+      {ADMIN_NAV_ITEMS.map(({ name, href, icon: Icon }) => (
         <Link
           key={href}
           href={href}

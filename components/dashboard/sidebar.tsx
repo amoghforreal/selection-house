@@ -11,7 +11,7 @@ import {
   MessageSquare,
 } from 'lucide-react'
 
-const NAV_ITEMS = [
+export const DASHBOARD_NAV_ITEMS = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Browse Catalogue', href: '/dashboard/catalogue', icon: ShoppingBag },
   { name: 'Cart', href: '/dashboard/cart', icon: ShoppingCart },
@@ -26,7 +26,7 @@ const NAV_ITEMS = [
 export function DashboardSidebar() {
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map(({ name, href, icon: Icon }) => (
+      {DASHBOARD_NAV_ITEMS.map(({ name, href, icon: Icon }) => (
         <Link
           key={href}
           href={href}

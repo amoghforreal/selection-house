@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AdminSidebar } from '@/components/admin/sidebar'
+import { AdminMobileNav } from '@/components/admin/mobile-nav'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +32,7 @@ export default async function AdminLayout({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
+      <AdminMobileNav adminName={profile.full_name} />
       <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8">
         <aside className="hidden lg:block">
           <div className="sticky top-8">
