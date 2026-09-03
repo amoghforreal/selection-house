@@ -8,6 +8,7 @@ import { ChevronRight, Lock, Package, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { placeholderImage } from '@/lib/placeholder-image'
 import { ProductPricing } from '@/components/shop/product-pricing'
+import { ReviewSection } from '@/components/shop/review-section'
 
 export const dynamic = 'force-dynamic'
 
@@ -179,6 +180,8 @@ export default async function ProductPage({ params }: PageProps) {
           />
         </div>
       </div>
+
+      <ReviewSection productId={product.id} isLoggedIn={isLoggedIn} />
     </div>
   )
 }
