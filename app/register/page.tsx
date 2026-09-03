@@ -134,7 +134,7 @@ export default function RegisterPage() {
       return
     }
 
-    router.push('/pending-approval')
+    router.push('/dashboard')
   }
 
   return (
@@ -143,8 +143,8 @@ export default function RegisterPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Register Your Business</CardTitle>
           <CardDescription>
-            Create a wholesale account to access real pricing and place bulk orders.
-            Your business will be reviewed and approved before you can order.
+            Create a free account to place bulk orders and track deliveries. Takes
+            less than a minute, no waiting, no approval needed.
           </CardDescription>
         </CardHeader>
         <CardContent>

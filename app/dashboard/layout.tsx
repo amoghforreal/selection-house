@@ -31,11 +31,7 @@ export default async function DashboardLayout({
     redirect('/register')
   }
 
-  if (business.status === 'pending') {
-    redirect('/pending-approval')
-  }
-
-  if (business.status === 'rejected' || business.status === 'blocked') {
+  if (business.status === 'blocked') {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
         <AlertTriangle className="h-10 w-10 mx-auto text-destructive mb-4" />

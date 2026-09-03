@@ -23,11 +23,7 @@ const FAQS = [
     answer:
       'A GST number is recommended but not strictly required at registration. Businesses without a GST number may still be approved at our discretion, though invoicing and tax handling may differ.',
   },
-  {
-    question: 'How long does account approval take?',
-    answer:
-      'Most business accounts are reviewed and approved within 24 hours. You will be notified once your account is active and wholesale pricing becomes visible.',
-  },
+
   {
     question: 'What is the Minimum Order Quantity (MOQ)?',
     answer:

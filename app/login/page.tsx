@@ -60,6 +60,24 @@ export default function LoginPage() {
       return
     }
 
+    const {
+      data: { user: loggedInUser },
+    } = await supabase.auth.getUser()
+
+    if (loggedInUser) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', loggedInUser.id)
+        .maybeSingle()
+
+      if (profile && ['staff', 'admin', 'super_admin'].includes(profile.role)) {
+        router.push('/admin')
+        router.refresh()
+        return
+      }
+    }
+
     router.push('/dashboard')
     router.refresh()
   }
