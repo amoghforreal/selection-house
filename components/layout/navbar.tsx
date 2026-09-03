@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { Menu, Search, ShoppingCart, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Menu, Search, ShoppingCart, User, LogOut, LayoutDashboard, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
+import { createClient } from '@/lib/supabase/client'
 
 const CATEGORIES = [
   'Hockey',
@@ -58,8 +60,62 @@ function slugify(name: string) {
 // Cart count is a placeholder until cart state is wired to Supabase.
 const CART_COUNT_PLACEHOLDER = 0
 
+type AuthState = {
+  loading: boolean
+  isLoggedIn: boolean
+  isAdmin: boolean
+}
+
 export function Navbar() {
+  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [auth, setAuth] = useState<AuthState>({ loading: true, isLoggedIn: false, isAdmin: false })
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function loadAuth(userId: string | null) {
+      if (!userId) {
+        setAuth({ loading: false, isLoggedIn: false, isAdmin: false })
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle()
+
+      setAuth({
+        loading: false,
+        isLoggedIn: true,
+        isAdmin: !!profile && ['staff', 'admin', 'super_admin'].includes(profile.role),
+      })
+    }
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      loadAuth(user?.id ?? null)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      loadAuth(session?.user?.id ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    setMobileOpen(false)
+    router.push('/')
+    router.refresh()
+  }
+
+  const accountHref = auth.isAdmin ? '/admin' : '/dashboard'
+  const accountLabel = auth.isAdmin ? 'Admin Panel' : 'My Dashboard'
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -90,18 +146,45 @@ export function Navbar() {
 
           {/* Desktop right actions */}
           <div className="hidden md:flex items-center gap-2 shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              render={<Link href="/login" aria-label="Account" />}
-            >
-              <User className="h-5 w-5" />
-            </Button>
+            {auth.loading ? (
+              <div className="h-9 w-24 rounded-md bg-secondary animate-pulse" />
+            ) : auth.isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger render={<Button variant="outline" />}>
+                  {auth.isAdmin ? (
+                    <ShieldCheck className="h-4 w-4 mr-2" />
+                  ) : (
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                  )}
+                  {accountLabel}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem render={<Link href={accountHref} />}>
+                    {accountLabel}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  render={<Link href="/login" aria-label="Account" />}
+                >
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button render={<Link href="/register" />}>Register Business</Button>
+              </>
+            )}
             <Button
               variant="ghost"
               size="icon"
               className="relative"
-              render={<Link href="/cart" aria-label="Cart" />}
+              render={<Link href="/dashboard/cart" aria-label="Cart" />}
             >
               <ShoppingCart className="h-5 w-5" />
               {CART_COUNT_PLACEHOLDER > 0 && (
@@ -110,7 +193,6 @@ export function Navbar() {
                 </Badge>
               )}
             </Button>
-            <Button render={<Link href="/register" />}>Register Business</Button>
           </div>
 
           {/* Mobile actions */}
@@ -119,7 +201,7 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               className="relative"
-              render={<Link href="/cart" aria-label="Cart" />}
+              render={<Link href="/dashboard/cart" aria-label="Cart" />}
             >
               <ShoppingCart className="h-5 w-5" />
               {CART_COUNT_PLACEHOLDER > 0 && (
@@ -144,17 +226,38 @@ export function Navbar() {
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   </div>
 
-                  <Button render={<Link href="/login" />} onClick={() => setMobileOpen(false)}>
-                    <User className="h-4 w-4 mr-2" />
-                    Login / My Account
-                  </Button>
-                  <Button
-                    variant="outline"
-                    render={<Link href="/register" />}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Register Your Business
-                  </Button>
+                  {auth.loading ? (
+                    <div className="h-9 w-full rounded-md bg-secondary animate-pulse" />
+                  ) : auth.isLoggedIn ? (
+                    <>
+                      <Button render={<Link href={accountHref} />} onClick={() => setMobileOpen(false)}>
+                        {auth.isAdmin ? (
+                          <ShieldCheck className="h-4 w-4 mr-2" />
+                        ) : (
+                          <LayoutDashboard className="h-4 w-4 mr-2" />
+                        )}
+                        {accountLabel}
+                      </Button>
+                      <Button variant="outline" onClick={handleLogout}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button render={<Link href="/login" />} onClick={() => setMobileOpen(false)}>
+                        <User className="h-4 w-4 mr-2" />
+                        Login / My Account
+                      </Button>
+                      <Button
+                        variant="outline"
+                        render={<Link href="/register" />}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        Register Your Business
+                      </Button>
+                    </>
+                  )}
 
                   <Separator />
 

@@ -53,9 +53,8 @@ export default function LoginPage() {
       password: values.password,
     })
 
-    setLoading(false)
-
     if (error) {
+      setLoading(false)
       setServerError(error.message)
       return
     }
@@ -80,6 +79,8 @@ export default function LoginPage() {
 
     router.push('/dashboard')
     router.refresh()
+    // Note: setLoading(false) is intentionally not called on the success path.
+    // The button should stay in its loading state until the page navigates away.
   }
 
   return (
