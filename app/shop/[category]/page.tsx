@@ -38,16 +38,11 @@ export default async function CategoryPage({ params }: PageProps) {
     base_price: number
     moq: number
     is_featured: boolean
+    cover_image_url: string | null
   }> = []
-  let isLoggedIn = false
 
   try {
     const supabase = await createClient()
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    isLoggedIn = !!user
 
     const { data: categoryRow } = await supabase
       .from('categories')
@@ -58,7 +53,7 @@ export default async function CategoryPage({ params }: PageProps) {
     if (categoryRow) {
       const { data: productRows } = await supabase
         .from('products')
-        .select('id, name, slug, brand, base_price, moq, is_featured')
+        .select('id, name, slug, brand, base_price, moq, is_featured, cover_image_url')
         .eq('category_id', categoryRow.id)
         .eq('is_active', true)
 
@@ -99,12 +94,7 @@ export default async function CategoryPage({ params }: PageProps) {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              categorySlug={categorySlug}
-              isLoggedIn={isLoggedIn}
-            />
+            <ProductCard key={product.id} product={product} categorySlug={categorySlug} />
           ))}
         </div>
       )}

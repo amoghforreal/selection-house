@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Lock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { placeholderImage } from '@/lib/placeholder-image'
 
@@ -12,16 +11,16 @@ type Product = {
   base_price: number
   moq: number
   is_featured: boolean
+  cover_image_url?: string | null
 }
 
 export function ProductCard({
   product,
   categorySlug,
-  isLoggedIn,
 }: {
   product: Product
   categorySlug: string
-  isLoggedIn: boolean
+  isLoggedIn?: boolean
 }) {
   return (
     <Link
@@ -30,7 +29,7 @@ export function ProductCard({
     >
       <div className="relative aspect-square bg-secondary">
         <Image
-          src={placeholderImage(product.slug, 500, 500)}
+          src={product.cover_image_url || placeholderImage(product.slug, 500, 500)}
           alt={product.name}
           fill
           className="object-cover"
@@ -53,16 +52,10 @@ export function ProductCard({
         <p className="text-xs text-muted-foreground">MOQ: {product.moq} units</p>
 
         <div className="mt-2">
-          {isLoggedIn ? (
-            <span className="text-lg font-bold text-primary">
-              ₹{product.base_price.toFixed(2)}
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Lock className="h-3.5 w-3.5" />
-              Login to view price
-            </span>
-          )}
+          <span className="text-lg font-bold text-primary">
+            ₹{product.base_price.toFixed(2)}
+          </span>
+          <span className="text-xs text-muted-foreground ml-1">/ unit</span>
         </div>
       </div>
     </Link>
